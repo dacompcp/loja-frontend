@@ -13,12 +13,32 @@ function SignUp(props) {
   const [whatsapp, setWhatsapp] = useState("");
   const [error, setError] = useState("");
 
+  function validators(element, regex, msg) {
+    if (!regex.test(String(element).toLocaleLowerCase())) throw msg;
+  }
+
   function handleSignUp(e) {
     e.preventDefault();
-    if (!username || !email || !cpf || !ra || course || !whatsapp) {
-      setError("Preencha todos os dados para se cadastrar");
-    } else {
+    try {
+      validators(
+        email,
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "email Incorreto"
+      );
+      validators(
+        cpf,
+        /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})/,
+        "CPF Incorreto"
+      );
+      validators(
+        whatsapp,
+        /^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/,
+        "Número de telefone Incorreto"
+      );
+      validators(ra, /^[0-9]\d{6}$/, "RA Incorreto");
       props.history.push("/home");
+    } catch (err) {
+      alert(err);
     }
   }
   return (
@@ -32,7 +52,7 @@ function SignUp(props) {
           onChange={e => setUsername(e.target.value)}
         />
         <input
-          type="email"
+          type="text"
           placeholder="Endereço de e-mail"
           onChange={e => setEmail(e.target.value)}
         />
